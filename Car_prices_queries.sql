@@ -202,3 +202,61 @@ order by sum(sellingprice) desc
 limit 10;
 
 select * from sellers_most_sales;
+
+
+
+-- Create tables for tableau
+
+create table make_model_sells_table
+(
+make nvarchar(100),
+model nvarchar(100),
+number_of_sales int,
+average_selling_price float,
+turnover float
+);
+
+insert into make_model_sells_table
+select make, model, count(make) as number_of_sales, avg(sellingprice) as average_selling_price, sum(sellingprice) as turnover
+from car_prices_2
+group by make, model
+order by sum(sellingprice) desc;
+
+create table make_sells_table
+(
+make nvarchar(100),
+number_of_sales int,
+average_selling_price float,
+turnover float
+);
+
+insert into make_sells_table
+select make, count(make) as number_of_sales, avg(sellingprice) as average_selling_price, sum(sellingprice) as turnover from car_prices_2
+group by make, model
+order by sum(sellingprice) desc;
+
+create table sellers_most_sales_table
+(
+top_sellers nvarchar(100),
+turnover float
+);
+
+insert into sellers_most_sales_table
+select seller as top_sellers, sum(sellingprice) as turnover
+from car_prices_2
+group by seller
+order by sum(sellingprice) desc;
+
+create table best_sellers_table
+(
+best_sellers nvarchar(100),
+number_of_sales int
+);
+
+insert into best_sellers_table
+select seller as best_sellers, count(seller) as number_of_sales
+from car_prices_2
+group by seller
+order by sum(sellingprice) desc;
+
+
